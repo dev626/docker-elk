@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 
 services:
 
@@ -7,8 +7,10 @@ services:
       context: elasticsearch/
       args:
         ELK_VERSION: $ELK_VERSION
+    restart: always
     volumes:
       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - es_data:/usr/share/elasticsearch/data
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -22,6 +24,7 @@ services:
       context: logstash/
       args:
         ELK_VERSION: $ELK_VERSION
+    restart: always
     volumes:
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
       - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
@@ -39,6 +42,7 @@ services:
       context: kibana/
       args:
         ELK_VERSION: $ELK_VERSION
+    restart: always
     volumes:
       - ./kibana/config/:/usr/share/kibana/config:ro
     ports:
@@ -52,3 +56,6 @@ networks:
 
   elk:
     driver: bridge
+
+volumes:
+  es_data:
